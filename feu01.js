@@ -1,37 +1,37 @@
-function calculatrice(expression) {
-  expression = expression.replace(/\s/g, '');
-  let terms = expression.split(/[\+\-\*\/\%]/);
-  let operation = expression.split('').filter(char => '/*-+%'.includes(char));
-  let result = terms.map(term => Number(term));
-  for (let i = 0; i < operation.length ; i++) {
-    let op = operation[i];
-    let term1 = result[i];
-    let term2 = result[i + 1];
-    let output;
-    switch(op) {
-      case '+':
-        output = term1 + term2;
-        break;
-      case '-':
-        output = term1 - term2;
-        break;
-      case '*':
-        output = term1 * term2;
-        break;
+/* programme qui reçoit une expression arithmétique dans une chaîne de caractères et en retourne le résultat après l’avoir calculé. */
+
+function strCalulator(str) {
+  str = str.replace(/\s/g, '');
+  numbers = str.split(/[\+\-\*\/\%]/);
+  operations = str.split('').filter(char => '%/*-+'.includes(char));
+  
+  let results = numbers.map(numbers => Number(numbers));
+  let currentResult;
+  for (let i = 0; i < operations.length; i++) {
+    let currentOp = operations[i];
+    let term1 = results[i];
+    let term2 = results[i + 1];
+    switch(currentOp) {
       case '/':
-        output = term1 / term2;
+        currentResult = term1 / term2;
         break;
       case '%':
-        output = term1 % term2;
+        currentResult = term1 % term2;
+        break;
+      case '*':
+        currentResult = term1 * term2;
+        break;
+      case '-':
+        currentResult = term1 - term2;
+        break;
+      case '+':
+        currentResult = term1 + term2;
         break;
     }
-    result.splice(i, 2, output);
-    operation.splice(i, 1);
+    results.splice(i, 2, currentResult);
+    operations.splice(i, 1);
     i--;
   }
-  return result[0];
+  return results[0];
 }
-
-myExpr = process.argv[2];
-
-console.log(calculatrice(myExpr));
+console.log(strCalulator(" 1 + 3 * 2"));
