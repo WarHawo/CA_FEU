@@ -1,37 +1,80 @@
-/* programme qui reçoit une expression arithmétique dans une chaîne de caractères et en retourne le résultat après l’avoir calculé. */
+function calculate(str) {
+  const operatorPrecedence = {
+    "+": 1,
+    "-": 1,
+    "*": 2,
+    "/": 2,
+    "%": 2
+  };
 
-function strCalulator(str) {
-  str = str.replace(/\s/g, '');
-  numbers = str.split(/[\+\-\*\/\%]/);
-  operations = str.split('').filter(char => '%/*-+'.includes(char));
-  
-  let results = numbers.map(numbers => Number(numbers));
-  let currentResult;
-  for (let i = 0; i < operations.length; i++) {
-    let currentOp = operations[i];
-    let term1 = results[i];
-    let term2 = results[i + 1];
-    switch(currentOp) {
-      case '/':
-        currentResult = term1 / term2;
-        break;
-      case '%':
-        currentResult = term1 % term2;
-        break;
-      case '*':
-        currentResult = term1 * term2;
-        break;
-      case '-':
-        currentResult = term1 - term2;
-        break;
-      case '+':
-        currentResult = term1 + term2;
-        break;
+  const tokens = str.match(/(\d+|\+|\-|\*|\/|\%|\(|\))/g);
+  const outputQueue = [];
+  const operatorStack = [];
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+
+    if (!isNaN(token)) {
+      outputQueue.push(Number(token));
+    } else if (token in operatorPrecedence) {
+      while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== "(" &&
+        operatorPrecedence[operatorStack[operatorStack.length - 1]] >= operatorPrecedence[token]) {
+        outputQueue.push(operatorStack.pop());
+      }
+
+      operatorStack.push(token);
+    } else if (token === "(") {
+      operatorStack.push(token);
+    } else if (token === ")") {
+      while (operatorStack[operatorStack.length - 1] !== "(") {
+        outputQueue.push(operatorStack.pop());
+      }
+
+      if (operatorStack[operatorStack.length - 1] === "(") {
+        operatorStack.pop();
+      }
     }
-    results.splice(i, 2, currentResult);
-    operations.splice(i, 1);
-    i--;
   }
-  return results[0];
+
+  while (operatorStack.length > 0) {
+    outputQueue.push(operatorStack.pop());
+  }
+
+  const operandStack = [];
+
+  for (let i = 0; i < outputQueue.length; i++) {
+    const token = outputQueue[i];
+
+    if (typeof token === "number") {
+      operandStack.push(token);
+    } else if (token in operatorPrecedence) {
+      const term2 = operandStack.pop();
+      const term1 = operandStack.pop();
+
+      let result;
+      switch (token) {
+        case "+":
+          result = term1 + term2;
+          break;
+        case "-":
+          result = term1 - term2;
+          break;
+        case "*":
+          result = term1 * term2;
+          break;
+        case "/":
+          result = term1 / term2;
+          break;
+        case "%":
+          result = term1 % term2;
+          break;
+      }
+
+      operandStack.push(result);
+    }
+  }
+
+  return operandStack.pop();
 }
-console.log(strCalulator(" 1 + 3 * 2"));
+
+console.log(calculate("1 + 3 * 2")); // expected output: 
