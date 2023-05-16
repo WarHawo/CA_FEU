@@ -1,13 +1,13 @@
-/* programme qui affiche un rectangle dans le terminal. */
+/* programme qui affiche un rectangle */
 
-function drawRectangle(width, height)
-{
-  const border = 'o';
+function drawRectangle(width, height) {
   const side = '|';
-  const line = "-";
-
-  let drawing = '';
+  const line = '-';
+  const space = ' ';
+  const border = 'o';
   
+  let drawing;
+
   if (width == 1 && height == 1) {
     drawing = border;
   } else if (width > 1 && height == 1) {
@@ -21,19 +21,18 @@ function drawRectangle(width, height)
   } else {
     drawing = border + line.repeat(width - 2) + border + '\n';
     for (let i = 0; i < height - 2; i++) {
-      drawing += side + " ".repeat(width - 2) + side + '\n';
+      drawing += side + space.repeat(width - 2) + side + '\n';
     }
-    drawing += border + line.repeat(width - 2) + border;
+    drawing += border + line.repeat(width - 2) + border ;
   }
   return drawing;
 }
 
-function isParamParse(width, height)
-{
-  return (!width || !height) ? false : (isNaN(Number(width)) || isNaN(Number(height))) ? false : (width < 1 || height < 1) ?  false :  true;
+function isParsed(width, height) {
+  return (!width || !height) ? false : (isNaN(Number(width)) || isNaN(Number(width))) ? false : (width < 1 || height < 1) ? false : true;
 }
 
-const myWidth = process.argv[2];
-const myHeight = process.argv[3];
+myWidth = process.argv[2];
+myHeight = process.argv[3];
 
-isParamParse(myWidth, myHeight) ? console.log(drawRectangle(myWidth, myHeight)) : console.log("Errreur: arguments");
+isParsed(myWidth, myHeight) ? console.log(drawRectangle(myWidth, myHeight)) : console.log("Erreur: arguments");
