@@ -35,4 +35,4 @@ function isParsed(width, height) {
 myWidth = process.argv[2];
 myHeight = process.argv[3];
 
-isParsed(myWidth, myHeight) ? console.log(drawRectangle(myWidth, myHeight)) : console.log("Erreur: arguments");
+isParsed(myWidth, myHeight) ? console.log(drawRectangle(myWidth, myHeight)) : console.log("Error: arguments");
