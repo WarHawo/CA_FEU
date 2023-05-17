@@ -1,76 +1,73 @@
 /** programme qui reçoit une expression arithmétique dans une chaîne de caractères et en retourne le résultat après l’avoir calculé. */
 
-function calcExpression (str) {
-  const operatorPriority = {
+function calcExpression(str) {
+  const opPriority = {
     "%": 2,
     "/": 2,
     "*": 2,
     "-": 1,
     "+": 1
   };
-  
-  const tokens = str.match(/[\d\(\)\%\/\*\-\+]/g);
-  const operatorStack = [];
-  const outputQueue = [];
+  str = str.replace(/\s/g, '');
+  const tokens = str.match(/(\d+|\%|\/|\*|\-|\+|\(|\))/g);
+  const outQueue = [];
+  const opStack = [];
 
-  for (let i = 0; i < tokens.length ; i++) {
-    const current = tokens[i];
+  for (let i = 0; i < tokens.length; i++) {
+    let current = tokens[i];
     
     if (!isNaN(current)) {
-      outputQueue.push(Number(current));
-    } else if (current in operatorPriority) {
-      while (operatorStack.length > 0 && operatorStack[operatorStack.length - 1] !== "(" && operatorPriority[operatorStack[operatorStack.length - 1]] >= operatorPriority[current]) {
-        outputQueue.push(operatorStack.pop());
-      }  
-      operatorStack.push(current);
+      outQueue.push(Number(current));
+    } else if (current in opPriority) {
+      while (opStack.length > 0 && opStack[opStack.length - 1] !== '(' && opPriority[opStack[opStack.length - 1]] >= opPriority[current]) {
+        outQueue.push(opStack.pop());
+      }
+      opStack.push(current);
     } else if (current === '(') {
-      operatorStack.push(current);
+      opStack.push(current);
     } else if (current === ')') {
-      while (operatorStack[operatorStack.length - 1] !== '(') {
-        outputQueue.push(operatorStack.pop());
+      while (opStack[opStack.length - 1] !== '(') {
+        outQueue.push(opStack.pop());
       }
-      if (operatorStack[operatorStack.length - 1] === '(') {
-        operatorStack.pop();
+      if (opStack[opStack.length - 1] === '(') {
+        opStack.pop();
       }
     }
   }
-  
-  while (operatorStack.length > 0) {
-    outputQueue.push(operatorStack.pop());
+
+  while (opStack.length > 0) {
+    outQueue.push(opStack.pop());
   }
 
-  let operandStack = [];
-
-  for (let i =0; i < outputQueue.length; i++) {
-    const current = outputQueue[i];
-    if (typeof current === "number") {
-      operandStack.push(current);
-    } else if (current in operatorPriority) {
-      const term2 = operandStack.pop();
-      const term1 = operandStack.pop();
-      let result = doOperation(current, term1, term2);
-      operandStack.push(result);
+  const resultStack = [];
+  for (let i = 0; i < outQueue.length; i++) {
+    let current = outQueue[i];
+    if (typeof current === 'number') {
+      resultStack.push(current);
+    } else if (current in opPriority) {
+      const term2 = resultStack.pop();
+      const term1 = resultStack.pop();
+      let result = doOp(current, term1, term2);
+      resultStack.push(result);
     }
   }
-  return operandStack.pop();
+  return resultStack.pop();
 }
 
-function doOperation(op, term1, term2) {
-  switch(op)
-    {
-      case '%':
-        return term1 % term2;
-      case '/':
-        return term1 / term2;
-      case '*':
-        return term1 * term2;
-      case '-':
-        return term1 - term2;
-      case '+':
-        return term1 + term2;
-    }
+function doOp(op, term1, term2) {
+  switch(op){
+    case '%':
+      return term1 % term2;
+    case '/':
+      return term1 / term2;
+    case '*':
+      return term1 * term2;
+    case '-':
+      return term1 - term2;
+    case '+':
+      return term1 + term2;
+  }
 }
 
-let myStr = process.argv[2];
-
+const myStr = process.argv[2];
 console.log(calcExpression(myStr));
