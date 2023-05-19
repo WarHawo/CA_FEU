@@ -52,13 +52,11 @@ function findShapeInBoard(board, shape){
             break;
           }
         }
-        if (!match) {
+        if (!match)
           break;
-        }
       }
-      if (match) {
+      if (match)
         return {row, col};
-      }
     }
   }
   return null;
@@ -80,8 +78,8 @@ function printResultBoard(board, shape, position){
       } 
     }
   }
-  console.log('Trouvé !');
-  console.log(`Coordonnées : ${position.row + 1},${position.col + 1}`);
+  console.log('Found !');
+  console.log(`Coordinates : ${position.row + 1},${position.col + 1}`);
   console.log(newBoard.map(row => row.join('')).join('\n'));
 }
 
@@ -93,9 +91,10 @@ function main () {
   const myShape = readShapeFile(shapeFile);
 
   let position = findShapeInBoard(myBoard, myShape);
+
   if (position)
     printResultBoard(myBoard, myShape, position);
   else
-    console.log("Introuvable");
+    console.log("Not Found");
 }
 main();
