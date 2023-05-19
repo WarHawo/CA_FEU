@@ -32,7 +32,11 @@ function isParsed(width, height) {
   return (!width || !height) ? false : (isNaN(Number(width)) || isNaN(Number(width))) ? false : (width < 1 || height < 1) ? false : true;
 }
 
-myWidth = process.argv[2];
-myHeight = process.argv[3];
+function main() {
+  myWidth = process.argv[2];
+  myHeight = process.argv[3];
 
-isParsed(myWidth, myHeight) ? console.log(drawRectangle(myWidth, myHeight)) : console.log("Error: arguments");
+  isParsed(myWidth, myHeight) ? console.log(drawRectangle(myWidth, myHeight)) : console.log("Error: arguments");
+}
+
+main();

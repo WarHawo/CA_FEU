@@ -69,5 +69,9 @@ function doOp(op, term1, term2) {
   }
 }
 
-const myStr = process.argv[2];
-console.log(calcExpression(myStr));
+function main() {
+  const myStr = process.argv[2];
+  console.log(calcExpression(myStr));
+}
+
+main();
