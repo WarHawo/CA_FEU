@@ -57,7 +57,7 @@ function parseBoard(board) {
   return {board: lines.map(line => line.split('')), empty: emptyChar, obstacle: obstaChar, full: fullChar };
 }
 
-function findLargestSquare(board, emptyChar, obstacleChar) {
+function findLargestSquare(board, emptyChar, obstaChar) {
   const numRows = board.length;
   const numCols = board[0].length;
   let largestSize = 0;
@@ -73,13 +73,13 @@ function findLargestSquare(board, emptyChar, obstacleChar) {
         // Check if a square of larger size can be formed
         while (isSquare && size + row < numRows && size + col < numCols) {
           for (let i = row; i <= row + size; i++) {
-            if (board[i][col + size] !== emptyChar) {
+            if (board[i][col + size] === obstaChar) {
               isSquare = false;
               break;
             }
           }
           for (let j = col; j <= col + size; j++) {
-            if (board[row + size][j] !== emptyChar) {
+            if (board[row + size][j] === obstaChar) {
               isSquare = false;
               break;
             }
@@ -102,27 +102,32 @@ function findLargestSquare(board, emptyChar, obstacleChar) {
   return { row: largestRow, col: largestCol, size: largestSize };
 }
 
-function fillLargestSquare(board, emptyChar, fullChar, largestSquare) {
-  const { row, col, size } = largestSquare;
+function fillLargestSquare(board, emptyChar,obstaChar, fullChar) {
+  const largestSquare = findLargestSquare(board, emptyChar, obstaChar);
+  const {row, col, size} = largestSquare;
 
   for (let i = row; i < row + size; i++) {
     for (let j = col; j < col + size; j++) {
-      board[i] = replaceCharAtIndex(board[i], j, fullChar);
+      board[i][j] = fullChar;
     }
   }
-
   return board;
 }
 
-function replaceCharAtIndex(str, index, newChar) {
-  return str.substring(0, index) + newChar + str.substring(index + 1);
+function printBoard(board) {
+  for (let i = 0; i < board.length; i++) {
+    console.log(board[i].join(''));
+  }
 }
 
 function main() {
 
   const myBoardFile = readBoardFile(process.argv[2]);
   const myBoard = parseBoard(myBoardFile);
-  console.log(findLargestSquare(myBoard.board, myBoard.empty, myBoard.obstacle));
+  const newBoard = fillLargestSquare(myBoard.board, myBoard.empty, myBoard.obstacle, myBoard.full);
+
+  printBoard(newBoard);
+
 }
 
 main();
